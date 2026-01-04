@@ -64,5 +64,19 @@ public class Flashlight : MonoBehaviour
     public void ToggleFlashlight()
     {
         flashlightOn = !flashlightOn;
+
+        if (!flashlightOn)
+        {
+            ShadowSpawn shadow = FindObjectOfType<ShadowSpawn>();
+            if (shadow != null)
+                shadow.ForceDeactivate();
+        }
+    }
+    
+    void OnTriggerStay2D(Collider2D other)
+    {
+        ShadowSpawn shadow = other.GetComponent<ShadowSpawn>();
+        if (shadow != null && flashlightOn && charge > 0f)
+            shadow.LitByFlashlight();
     }
 }

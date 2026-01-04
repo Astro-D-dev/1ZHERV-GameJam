@@ -13,8 +13,9 @@ public class Interacting : MonoBehaviour
 
     void DetectHover()
     {
+        int layerMask = ~(1 << 6);
         Vector2 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Collider2D hit = Physics2D.OverlapPoint(mouseWorld);
+        Collider2D hit = Physics2D.OverlapPoint(mouseWorld, layerMask);
 
         if (hit == null)
         {

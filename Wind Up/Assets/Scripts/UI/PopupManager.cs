@@ -39,7 +39,7 @@ public class PopupManager : MonoBehaviour
         foreach (string msg in messages)
         {
             popupText.text = msg;
-            yield return new WaitForSecondsRealtime(3f);
+            yield return new WaitForSecondsRealtime(5f);
         }
 
         popupText.gameObject.SetActive(false);

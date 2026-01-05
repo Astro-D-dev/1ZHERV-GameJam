@@ -9,14 +9,22 @@ public class Flashlight : MonoBehaviour
 
     public float chargeRate = 0.2f;
     public float decayRate = 0.1f;
+
     private Vector3 lastMousePos;
     private bool firstFrame = true;
+
+    public ShadowSpawn shadowManager;
 
     void Update()
     {
         HandleMouseInput();
         DecayCharge();
         UpdateFlashlight();
+
+        if (flashlightOn && charge > 0f && shadowManager != null)
+        {
+            DetectShadowUnderLight();
+        }
     }
 
     void HandleMouseInput()
@@ -65,18 +73,24 @@ public class Flashlight : MonoBehaviour
     {
         flashlightOn = !flashlightOn;
 
-        if (!flashlightOn)
+        if (!flashlightOn && shadowManager != null)
         {
-            ShadowSpawn shadow = FindObjectOfType<ShadowSpawn>();
-            if (shadow != null)
-                shadow.ForceDeactivate();
+            shadowManager.ForceDeactivate();
         }
     }
-    
-    void OnTriggerStay2D(Collider2D other)
+
+    void DetectShadowUnderLight()
     {
-        ShadowSpawn shadow = other.GetComponent<ShadowSpawn>();
-        if (shadow != null && flashlightOn && charge > 0f)
-            shadow.LitByFlashlight();
+        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorld.z = 0f;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(mouseWorld, 0.4f);
+        foreach (var hit in hits)
+        {
+            if (hit.gameObject == shadowManager.shadow)
+            {
+                shadowManager.LitByFlashlight();
+            }
+        }
     }
 }
